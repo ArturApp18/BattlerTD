@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9745ed35fe3f4ed990c14f6e174aeb83, type: 3}
+  m_Name: Default
+  m_EditorClassIdentifier: 
+  SkillTypeId: 5
+  SkillPrefab: {fileID: 1127106713771218734, guid: 7f46260df41f6824ba6cf7143b3f44c2,
+    type: 3}
+  SkillUIPrefab: {fileID: 5545204508305909155, guid: 50394db79b9ad7d4fa614145776ddeca,
+    type: 3}
+  Name: "\u042D\u0422\u041E \u043F\u0440\u043E\u0442\u0441\u043E \u0437\u0430\u0433\u043B\u0443\u0448\u043A\u0430"
+  Level: 0
+  Description: 0
+  SkillImage: {fileID: 21300000, guid: 37de44bcb59b8174497def1957cc490b, type: 3}
