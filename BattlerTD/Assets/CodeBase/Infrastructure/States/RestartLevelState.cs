@@ -6,6 +6,8 @@ namespace CodeBase.Infrastructure.States
 {
 	public class RestartLevelState : IState
 	{
+		private const string Initial = "Initial";
+		
 		private readonly IGameFactory _gameFactory;
 		private readonly ITimerService _timerService;
 		private readonly LoadingCurtain _loadingCurtain;
@@ -25,7 +27,7 @@ namespace CodeBase.Infrastructure.States
 		{
 			_gameFactory.Dispose();
 			_timerService.Dispose();
-			_sceneLoader.Load("Initial", OnLoaded);
+			_sceneLoader.Load(Initial, OnLoaded);
 		}
 
 		private void OnLoaded()

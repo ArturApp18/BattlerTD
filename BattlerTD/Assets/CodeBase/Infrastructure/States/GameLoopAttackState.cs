@@ -80,22 +80,16 @@ namespace CodeBase.Infrastructure.States
 		{
 			_monstersInGame.Add(monster);
 			if (_monstersInGame.Count >= _monstersForWave)
-			{
 				StopWave();
-			}
 		}
 
 		private void KilledMobsChanged()
 		{
 			if (_monstersInGame.Count > 0)
-			{
 				_monstersInGame.RemoveAt(_monstersInGame.Count - 1);
-			}
-			
+
 			if (_progressService.Progress.KillData.KilledMobs >= _monstersForWave && _monstersInGame.Count < 1)
-			{
 				_stateMachine.Enter<GameLoopBuildingState>();
-			}
 		}
 
 		private void StartWave()
@@ -103,17 +97,13 @@ namespace CodeBase.Infrastructure.States
 			float result = _monstersForWave / _gameFactory.Spawners.Count;
 			
 			foreach (SpawnPoint spawner in _gameFactory.Spawners)
-			{
 				spawner.StartSpawn(result);
-			}
 		}
 
 		private void StopWave()
 		{
 			foreach (SpawnPoint spawner in _gameFactory.Spawners)
-			{
 				spawner.StopSpawn(_monstersForWave);
-			}
 		}
 
 		private void OnCutsceneEnded() { }
@@ -142,10 +132,8 @@ namespace CodeBase.Infrastructure.States
 		private void LevelUp()
 		{
 			_heroHealth.LevelUp();
-			//	_windowService.Open(WindowId.TowerPanel);
 			Hid();
 			_timerService.LevelStage *= 1.15f;
-			//	_progressService.Progress.HeroStats.Damage *= 1.075f;
 		}
 	}
 
