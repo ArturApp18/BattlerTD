@@ -12,6 +12,7 @@ using CodeBase.Infrastructure.Services.Timers;
 using CodeBase.Logic;
 using CodeBase.Logic.EnemySpawners;
 using CodeBase.StaticData;
+using CodeBase.Tower;
 using CodeBase.UI.Elements;
 using CodeBase.UI.Services.Windows;
 using UnityEngine;
@@ -31,6 +32,7 @@ namespace CodeBase.Infrastructure.Services.Factory
 		private readonly IPersistentProgressService _persistentProgressService;
 		private readonly IWindowService _windowService;
 		private readonly IInputService _inputService;
+		private readonly IBuildingService _buildingServie;
 		private readonly List<SpawnPoint> _spawners = new List<SpawnPoint>();
 		private GameObject _heroGameObject;
 
@@ -84,25 +86,23 @@ namespace CodeBase.Infrastructure.Services.Factory
 			return _heroGameObject;
 		}
 
-		public GameObject CreateHud()
-		{ 
+		public Hud CreateHud()
+		{
 			_hud = InstantiateRegistered(AssetPath.HudPath).GetComponent<Hud>();
-
-			HUD.GetComponentInChildren<LootCounter>()
+			_hud.GetComponentInChildren<LootCounter>()
 				.Construct(_persistentProgressService.Progress.WorldData);
-
+			
+			_hud.DisappearTowerPanel();
 			foreach (OpenWindowButton openWindowButton in HUD.GetComponentsInChildren<OpenWindowButton>())
 				openWindowButton.Init(_windowService);
 
-			return _hud.gameObject;
+			return _hud;
 		}
 
 		public LootPiece CreateLoot()
 		{
 			LootPiece lootPiece = InstantiateRegistered(AssetPath.Loot)
 				.GetComponent<LootPiece>();
-
-			Debug.Log(lootPiece);
 
 			lootPiece.Construct(_persistentProgressService.Progress.WorldData);
 
@@ -130,14 +130,21 @@ namespace CodeBase.Infrastructure.Services.Factory
 
 			monster.GetComponent<AgentMoveToPlayer>()?.Construct(_heroGameObject.transform);
 			monster.GetComponent<RotateToHero>()?.Construct(_heroGameObject.transform);
-			
+
 			LootSpawner lootSpawner = monster.GetComponentInChildren<LootSpawner>();
 			Debug.Log(lootSpawner);
 			lootSpawner.Construct(this, _randomService);
 			lootSpawner.SetLootValue(monsterData.MinLootValue, monsterData.MaxLootValue);
 
-		//	Monsters.Add(monster);
+			//	Monsters.Add(monster);
 			return monster;
+		}
+
+		public GameObject CreateTower(TowerType towerType, Vector3 position, Quaternion rotation)
+		{
+			TowerStaticData towerData = _staticData.ForTower(towerType);
+			GameObject tower = Object.Instantiate(towerData.Prefab, position, rotation);
+			return tower;
 		}
 
 		public GameObject CreateMonster(MonsterTypeId typeId, Transform parent, float progressMultiplier)
@@ -171,9 +178,10 @@ namespace CodeBase.Infrastructure.Services.Factory
 			return monster;
 		}
 
-		public void CreateSpawner(string spawnerId, Vector3 at, MonsterTypeId monsterTypeId)
+		public void CreateSpawner(string spawnerId, Vector3 at, Quaternion rotation, MonsterTypeId monsterTypeId)
 		{
 			SpawnPoint spawner = InstantiateRegistered(AssetPath.Spawner, at).GetComponent<SpawnPoint>();
+			spawner.transform.rotation = rotation;
 			spawner.Construct(this);
 			spawner.MonsterTypeId = monsterTypeId;
 			spawner.Id = spawnerId;
@@ -188,17 +196,23 @@ namespace CodeBase.Infrastructure.Services.Factory
 			_bossSpawner.MonsterTypeId = monsterTypeId;
 		}
 
-		public GameObject CreateMainPumpkin(Vector3 at)
+		public GameObject CreateKing(Vector3 at)
 		{
-			_mainPumpkin = InstantiateRegistered(AssetPath.PumpkinPath, at);
-			_mainPumpkin.transform.Rotate(0,180,0);
+			_mainPumpkin = InstantiateRegistered(AssetPath.KingPath, at);
+			_mainPumpkin.transform.Rotate(0, 180, 0);
 			return _mainPumpkin;
+		}
+
+		public Grid CreateGrid()
+		{
+			Grid grid = InstantiateRegistered(AssetPath.Grid).GetComponent<Grid>();
+			return grid;
 		}
 
 		public void Dispose()
 		{
 			Object.Destroy(_heroGameObject);
-			
+
 			foreach (GameObject monster in Monsters)
 			{
 				Object.Destroy(monster.gameObject);

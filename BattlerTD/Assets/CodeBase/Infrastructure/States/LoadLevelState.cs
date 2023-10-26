@@ -9,6 +9,7 @@ using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.Timers;
 using CodeBase.Logic;
 using CodeBase.StaticData;
+using CodeBase.Tower;
 using CodeBase.UI;
 using CodeBase.UI.Elements;
 using CodeBase.UI.Services.Factory;
@@ -29,10 +30,12 @@ namespace CodeBase.Infrastructure.States
 		private readonly IStaticDataService _staticData;
 		private readonly IUIFactory _uiFactory;
 		private readonly ITimerService _timerService;
+		private readonly IBuildingService _buildingService;
 		private GameObject _hero;
 
 		public LoadLevelState(GameStateMachine gameStateMachine, SceneLoader sceneLoader, LoadingCurtain loadingCurtain, IGameFactory gameFactory,
-			IPersistentProgressService progressService, IStaticDataService staticDataService, IUIFactory uiFactory, ITimerService timerService)
+			IPersistentProgressService progressService, IStaticDataService staticDataService, IUIFactory uiFactory, ITimerService timerService,
+			IBuildingService buildingService)
 		{
 			_stateMachine = gameStateMachine;
 			_sceneLoader = sceneLoader;
@@ -42,6 +45,7 @@ namespace CodeBase.Infrastructure.States
 			_staticData = staticDataService;
 			_uiFactory = uiFactory;
 			_timerService = timerService;
+			_buildingService = buildingService;
 		}
 
 		public void Enter(string sceneName)
@@ -78,21 +82,25 @@ namespace CodeBase.Infrastructure.States
 		{
 			LevelStaticData levelData = LevelStaticData();
 			_hero = _gameFactory.CreateHero(levelData.InitialHeroPosition);
+			CameraFollow(_hero);
 			InitMainPumpkin(levelData);
+			InitGrid();
 			InitSpawners(levelData);
 			//InitBossSpawners();
 			InitLootPieces();
 			InitHud(_hero);
-			CameraFollow(_hero);
 		}
 
+		private void InitGrid() =>
+			_buildingService.Init();
+
 		private void InitMainPumpkin(LevelStaticData levelData) =>
-			_gameFactory.CreateMainPumpkin(levelData.InitialMainBuildingPosition);
+			_gameFactory.CreateKing(levelData.InitialMainBuildingPosition);
 
 		private void InitSpawners(LevelStaticData levelData)
 		{
 			foreach (EnemySpawnerStaticData spawnerData in levelData.EnemySpawners)
-				_gameFactory.CreateSpawner(spawnerData.Id, spawnerData.Position, spawnerData.MonsterTypeId);
+				_gameFactory.CreateSpawner(spawnerData.Id, spawnerData.Position, spawnerData.Rotation, spawnerData.MonsterTypeId);
 		}
 
 		private LevelStaticData LevelStaticData()
@@ -122,8 +130,9 @@ namespace CodeBase.Infrastructure.States
 
 		private void InitHud(GameObject hero)
 		{
-			GameObject hud = _gameFactory.CreateHud();
-
+			Hud hud = _gameFactory.CreateHud();
+			hud.Construct(_buildingService);
+			hud.AppearAttackButton();
 			/*hud.GetComponentInChildren<ActorUI>().Construct(hero.GetComponent<HeroHealth>(), _progressService);
 			hud.GetComponentInChildren<GamePlayingClockUI>().Construct(_timerService);*/
 		}

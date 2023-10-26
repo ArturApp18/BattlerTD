@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.Services.Inputs
@@ -9,10 +10,14 @@ namespace CodeBase.Infrastructure.Services.Inputs
 		private const string Button = "Fire";
 		private const string Button2 = "Fire2";
 		private const string Button3 = "Fire3";
+		private const string Button4 = "Fire4";
+		private const string Button5 = "Fire5";
 		private bool _isDragging;
 		private int _towerButtonCounter;
 		private Vector2 _startTouch, swipeDelta;
 
+		public event Action TowerButtonPressed;
+		public event Action TowerButtonUnpressed;
 		public abstract Vector2 Axis { get; }
 		public Touch Touch { get; set; }
 
@@ -26,9 +31,6 @@ namespace CodeBase.Infrastructure.Services.Inputs
 
 		public bool SwipeDown { get; set; }
 
-		public bool SecondTowerTap { get; set; }
-		public bool FirstTowerTap { get; set; } 
-
 		public bool IsDragging
 		{
 			get
@@ -40,17 +42,48 @@ namespace CodeBase.Infrastructure.Services.Inputs
 		public bool IsAttackButtonUp() =>
 			SimpleInput.GetButtonUp(Button);
 
-		public bool IsRadiusTowerButtonDown() =>
-			SimpleInput.GetButtonDown(Button3);
-
-		public bool IsRadiusTowerButtonUp() =>
-			SimpleInput.GetButtonUp(Button3);
-
 		public bool IsTurretTowerButtonDown() =>
 			SimpleInput.GetButtonDown(Button2);
 
 		public bool IsTurretTowerButtonUp() =>
 			SimpleInput.GetButtonUp(Button2);
+
+		public bool IsOrbLightningButtonDown() =>
+			SimpleInput.GetButtonDown(Button3);
+
+		public bool IsOrbLightningButtonUp() =>
+			SimpleInput.GetButtonUp(Button3);
+
+		public bool IsWallArrowTrapTowerButtonUp() =>
+			SimpleInput.GetButtonUp(Button4);
+		
+		public bool IsWallArrowTrapTowerButtonDown() =>
+			SimpleInput.GetButtonDown(Button4);
+
+		public bool IsFloorTrapTowerButtonDown() =>
+			SimpleInput.GetButtonDown(Button5);	
+		
+		public bool IsFloorTrapTowerButtonUp() =>
+			SimpleInput.GetButtonUp(Button5);
+
+		public void IsAnyTowerButtonDown()
+		{
+			if (IsOrbLightningButtonDown() || IsTurretTowerButtonDown() || IsFloorTrapTowerButtonDown() || IsWallArrowTrapTowerButtonDown())
+				TowerButtonPressed?.Invoke();
+		}	
+		
+		public bool IsAnyTowerButtonUp()
+		{
+			if (IsOrbLightningButtonUp() || IsTurretTowerButtonUp() || IsFloorTrapTowerButtonUp() || IsWallArrowTrapTowerButtonUp())
+			{
+				TowerButtonUnpressed?.Invoke();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
 
 		protected static Vector2 SimpleInputAxis() =>
@@ -59,6 +92,8 @@ namespace CodeBase.Infrastructure.Services.Inputs
 
 		public void Update()
 		{
+			IsAnyTowerButtonUp();
+			IsAnyTowerButtonDown();
 			Tap = SwipeDown = SwipeUp = SwipeLeft = SwipeRight = false;
 
 			if (Input.touches.Length > 0)

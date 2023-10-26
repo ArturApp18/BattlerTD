@@ -33,7 +33,7 @@ namespace CodeBase.Weapon
 		private void OnTriggerEnter(Collider other)
 		{
 			Debug.Log(other.name);
-			other.transform.GetComponentInChildren<IHealth>().TakeDamage(_damage);
+			other.transform.GetComponentInParent<IHealth>().TakeDamage(_damage);
 			Instantiate(_explosionVFX, other.transform.position, Quaternion.identity);
 			Destroy(gameObject);
 		}

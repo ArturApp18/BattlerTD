@@ -1,5 +1,6 @@
 ﻿using CodeBase.Infrastructure.Services;
 using CodeBase.UI.Elements;
+using UnityEngine;
 
 namespace CodeBase.UI.Services.Factory
 {
@@ -7,5 +8,6 @@ namespace CodeBase.UI.Services.Factory
   {
     void CreateUIRoot();
     void CreateShop();
+    Transform UiRoot { get; }
   }
 }

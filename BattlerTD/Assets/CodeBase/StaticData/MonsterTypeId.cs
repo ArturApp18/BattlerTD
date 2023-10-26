@@ -8,5 +8,6 @@ namespace CodeBase.StaticData
     Wizard = 4,
     Orc = 5,
     AngryChest = 6,
+    Beholder = 7,
   }
 }

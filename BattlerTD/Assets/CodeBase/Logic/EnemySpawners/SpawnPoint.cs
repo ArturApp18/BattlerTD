@@ -73,7 +73,6 @@ namespace CodeBase.Logic.EnemySpawners
 
 		private IEnumerator SpawnNormalMob(float times)
 		{
-			Debug.Log(times);
 			for (int i = 0; i < times; i++)
 			{
 				GameObject monster = _factory.CreateMonster(MonsterTypeId, transform);

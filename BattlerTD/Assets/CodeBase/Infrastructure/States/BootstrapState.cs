@@ -8,6 +8,7 @@ using CodeBase.Infrastructure.Services.Randomizer;
 using CodeBase.Infrastructure.Services.SaveLoad;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.Timers;
+using CodeBase.Tower;
 using CodeBase.UI.Services.Factory;
 using CodeBase.UI.Services.Windows;
 using UnityEngine;
@@ -71,6 +72,8 @@ namespace CodeBase.Infrastructure.States
 			_services.RegisterSingle<ISaveLoadService>(new SaveLoadService(
 				_services.Single<IPersistentProgressService>(),
 				_services.Single<IGameFactory>()));
+
+			_services.RegisterSingle<IBuildingService>(new BuildingService(_services.Single<IInputService>(), _services.Single<IGameFactory>(), _services.Single<IStaticDataService>()));
 		}
 
 

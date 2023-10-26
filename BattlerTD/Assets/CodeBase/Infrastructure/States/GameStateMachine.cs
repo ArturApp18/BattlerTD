@@ -8,6 +8,7 @@ using CodeBase.Infrastructure.Services.SaveLoad;
 using CodeBase.Infrastructure.Services.StaticData;
 using CodeBase.Infrastructure.Services.Timers;
 using CodeBase.Logic;
+using CodeBase.Tower;
 using CodeBase.UI.Services.Factory;
 using CodeBase.UI.Services.Windows;
 
@@ -27,7 +28,7 @@ namespace CodeBase.Infrastructure.States
 				[typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, services),
 				[typeof(LoadLevelState)] = new LoadLevelState(this, sceneLoader, loadingCurtain, services.Single<IGameFactory>(),
 					services.Single<IPersistentProgressService>(), services.Single<IStaticDataService>(), services.Single<IUIFactory>(),
-					services.Single<ITimerService>()),
+					services.Single<ITimerService>(), services.Single<IBuildingService>()),
 
 				[typeof(LoadProgressState)] = new LoadProgressState(this, services.Single<IPersistentProgressService>(), services.Single<ISaveLoadService>()),
 				[typeof(GameLoopAttackState)] = new GameLoopAttackState(this, services.Single<IWindowService>(), services.Single<IPersistentProgressService>(), loadingCurtain,
@@ -46,7 +47,7 @@ namespace CodeBase.Infrastructure.States
 		public void Update()
 		{
 			_activeState?.Update();
-			_services.Single<IInputService>().Update();
+			_services?.Single<IInputService>().Update();
 		}
 
 		public void Enter<TState, TPayload>(TPayload payload) where TState : class, IPayloadedState<TPayload>

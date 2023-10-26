@@ -10,10 +10,7 @@ namespace CodeBase.Hero
 		[SerializeField] public Animator _animator;
     
 		public AnimatorState State { get; }
-
-		private void Awake() =>
-			_animator = GetComponent<Animator>();
-
+		
 		public void PlayHit()
 		{
 			_animator.SetTrigger(HitHash);

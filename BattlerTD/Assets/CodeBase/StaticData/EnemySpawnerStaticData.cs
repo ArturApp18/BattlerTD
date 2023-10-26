@@ -9,12 +9,14 @@ namespace CodeBase.StaticData
     public string Id;
     public MonsterTypeId MonsterTypeId;
     public Vector3 Position;
+    public Quaternion Rotation;
 
-    public EnemySpawnerStaticData(string id, MonsterTypeId monsterTypeId, Vector3 position)
+    public EnemySpawnerStaticData(string id, MonsterTypeId monsterTypeId, Vector3 position, Quaternion rotation)
     {
       Id = id;
       MonsterTypeId = monsterTypeId;
       Position = position;
+      Rotation = rotation;
     }
   }
 }

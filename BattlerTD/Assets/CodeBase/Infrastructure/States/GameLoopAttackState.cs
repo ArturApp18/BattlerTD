@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CodeBase.Hero;
 using CodeBase.Infrastructure.Services.Factory;
 using CodeBase.Infrastructure.Services.PersistentProgress;
 using CodeBase.Infrastructure.Services.Timers;
 using CodeBase.Logic;
 using CodeBase.Logic.EnemySpawners;
-using CodeBase.UI.Services.Factory;
 using CodeBase.UI.Services.Windows;
 using UnityEngine;
 
@@ -22,7 +20,7 @@ namespace CodeBase.Infrastructure.States
 		private readonly IGameFactory _gameFactory;
 		private readonly SceneLoader _sceneLoader;
 		private IHealth _heroHealth;
-		private float _monstersForWave = 15;
+		private float _monstersForWave = 2;
 		private List<GameObject> _monstersInGame = new List<GameObject>();
 
 		public GameLoopAttackState(GameStateMachine stateMachine, IWindowService windowService, IPersistentProgressService progressService, LoadingCurtain loadingCurtain,
@@ -48,25 +46,11 @@ namespace CodeBase.Infrastructure.States
 			_progressService.Progress.KillData.Changed -= KilledMobsChanged;
 		}
 
-		private void DescribeHeroDeath()
-		{
-			_gameFactory.HeroGameObject.TryGetComponent(out HeroDeath heroDeath);
-			heroDeath.Restart -= Restart;
-			_gameFactory.MainPumpkinGameObject.TryGetComponent(out BuildingHealth health);
-			health.Restart -= Restart;
-		}
-
-
-		public void Update()
-		{
-
-		}
-
 		public void Enter()
 		{
+			_gameFactory.HUD.AppearAttackButton();
 			_gameFactory.MonsterCreated += MonsterCreated;
 			_progressService.Progress.KillData.Changed += KilledMobsChanged;
-			_gameFactory.HUD.AppearAttackButton();
 			_gameFactory.HeroGameObject.TryGetComponent(out _heroHealth);
 			SubscribeHeroDeath();
 
@@ -75,6 +59,20 @@ namespace CodeBase.Infrastructure.States
 			_progressService.Progress.WorldData.LootData.LevelUp += LevelUp;
 			Hid();
 		}
+
+		public void Update()
+		{
+
+		}
+
+		private void DescribeHeroDeath()
+		{
+			_gameFactory.HeroGameObject.TryGetComponent(out HeroDeath heroDeath);
+			heroDeath.Restart -= Restart;
+			_gameFactory.MainPumpkinGameObject.TryGetComponent(out BuildingHealth health);
+			health.Restart -= Restart;
+		}
+
 
 		private void MonsterCreated(GameObject monster)
 		{

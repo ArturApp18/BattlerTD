@@ -1,3 +1,4 @@
+using System.Collections;
 using CodeBase.Infrastructure.Services;
 using CodeBase.Infrastructure.Services.Inputs;
 using UnityEngine;
@@ -7,22 +8,33 @@ namespace CodeBase.Tower
 	public class ObjectDrag : MonoBehaviour
 	{
 		private Vector3 _offset;
-		private IInputService _input;
+		private IBuildingService _buildingService;
+		private IInputService _inputService;
 
-		private void Awake()
+		public void Construct(IBuildingService buildingService, IInputService inputService)
 		{
-			_input = AllServices.Container.Single<IInputService>();
-		}
-		
-		private void OnMouseDown()
-		{
-			_offset = transform.position - BuildingHandler.GetMouseWorldPosition();
+			_buildingService = buildingService;
+			_inputService = inputService;
 		}
 
-		private void Update()
+		public void StopDraggingCoroutine()
 		{
-			Vector3 position = BuildingHandler.GetMouseWorldPosition() + _offset;
-			transform.position = BuildingHandler.Current.SnapCoordinateToGrid(position);
+			StopCoroutine(OnDraggingObject());
+		}
+		public void OnObjectTapped()
+		{
+			_offset = transform.position - _buildingService.GetMouseWorldPosition();
+			StartCoroutine(OnDraggingObject());
+		}
+
+		private IEnumerator OnDraggingObject()
+		{
+			while (_buildingService.IsDraggingObject)
+			{
+				Vector3 position = _buildingService.GetMouseWorldPosition() + _offset;
+				transform.position = _buildingService.SnapCoordinateToGrid(position);
+				yield return null;
+			}
 		}
 	}
 }

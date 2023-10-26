@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace CodeBase.Infrastructure.AssetManagement
 {
   public static class AssetPath
@@ -7,6 +9,9 @@ namespace CodeBase.Infrastructure.AssetManagement
     public const string HudPath = "UI/HUD/HUD";
     public const string Spawner = "Enemies/Spawners/SpawnPoint";
     public const string BossSpawner = "Enemies/BossSpawnPoint";
-    public const string PumpkinPath = "Hero/Pumpkin";
+    public const string KingPath = "Hero/King";
+    public const string OrbFire = "Tower/OrbFire";
+    public const string OrbIce = "Tower/OrbIce";
+    public const string Grid = "Tower/Grid";
   }
 }

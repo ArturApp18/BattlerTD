@@ -27,4 +27,5 @@ namespace CodeBase.StaticData
     
     public GameObject Prefab;
   }
+
 }

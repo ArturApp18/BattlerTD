@@ -45,7 +45,7 @@ namespace CodeBase.Hero
 
     private void OnAttack()
     {
-      PhysicsDebug.DrawDebug(StartPoint() + transform.forward, _stats.DamageRadius, 1.0f);
+      PhysicsDebug.DrawDebug(transform.position + transform.forward, _stats.DamageRadius, 1.0f);
       for (int i = 0; i < Hit(); ++i)
       {
         _hits[i].transform.GetComponentInParent<IHealth>().TakeDamage(Damage);
@@ -54,10 +54,7 @@ namespace CodeBase.Hero
     }
 
     private int Hit() => 
-      Physics.OverlapSphereNonAlloc(StartPoint() + transform.forward, _stats.DamageRadius, _hits, _layerMask);
-
-    private Vector3 StartPoint() =>
-      new Vector3(transform.position.x, CharacterController.center.y / 2, transform.position.z);
+      Physics.OverlapSphereNonAlloc(transform.position + transform.forward, _stats.DamageRadius, _hits, _layerMask);
 
     private void PlayTakeDamageFx(Vector3 position) =>
       Instantiate(ImpactFxPrefab, position, Quaternion.identity);

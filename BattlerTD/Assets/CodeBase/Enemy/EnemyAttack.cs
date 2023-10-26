@@ -42,7 +42,6 @@ namespace CodeBase.Enemy
 		{
 			if (Hit(out Collider hit))
 			{
-				Debug.Log(hit.name);
 				//PhysicsDebug.DrawDebugCross(StartPoint(), Cleavage, 1.0f);
 				hit.transform.GetComponent<IHealth>().TakeDamage(Damage);
 				PlayTakeDamageFx(hit.transform.position);

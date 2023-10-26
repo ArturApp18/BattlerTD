@@ -62,7 +62,7 @@ namespace CodeBase.Enemy
 
 		public void ChangeToOldTarget()
 		{
-			Agent.stoppingDistance = 3.5f;
+			Agent.stoppingDistance = 2.2f;
 			TargetTransform = _cachedPumpkinTransform;
 		}
 

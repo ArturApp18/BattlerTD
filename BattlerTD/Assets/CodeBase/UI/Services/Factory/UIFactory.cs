@@ -20,6 +20,14 @@ namespace CodeBase.UI.Services.Factory
 		private readonly ITimerService _timerService;
 		private TowerPanel _towerPanel;
 
+		public Transform UiRoot
+		{
+			get
+			{
+				return _uiRoot;
+			}
+		}
+
 		public UIFactory(IAssetProvider assets, IStaticDataService staticData, IPersistentProgressService progressService,
 			ITimerService timerService)
 		{
@@ -37,6 +45,7 @@ namespace CodeBase.UI.Services.Factory
 			}
 		}
 
+
 		public void CreateUIRoot() =>
 			_uiRoot = _assets.Instantiate(UIRootPath).transform;
 
@@ -44,6 +53,7 @@ namespace CodeBase.UI.Services.Factory
 		{
 			
 		}
+
 	}
 
 }

@@ -8,15 +8,31 @@ namespace CodeBase.UI.Elements
 {
 	public class Hud : MonoBehaviour
 	{
-		[SerializeField] private Transform _attackButtonInGamePosition;
-		[SerializeField] private Transform _attackButtonStartPosition;
-		[SerializeField] private Transform _towerPanelStartPosition;
-		[SerializeField] private Transform _towerPanelInGamePosition;
-		[SerializeField] private Transform _attackButton;
-		[SerializeField] private Transform _towerPanel;
+		[SerializeField] private RectTransform _attackButtonInGamePosition;
+		[SerializeField] private RectTransform _attackButtonStartPosition;
+		[SerializeField] private RectTransform _towerPanelStartPosition;
+		[SerializeField] private RectTransform _towerPanelInGamePosition;
+		[SerializeField] private RectTransform _attackButton;
+		[SerializeField] private RectTransform _towerPanel;
+		[SerializeField] private RectTransform _hudTransform;
 		[SerializeField] private float _appearDuration;
 
 		private Vector3 _startPosition;
+		private IBuildingService _buildingService;
+		public RectTransform HUDTransform
+		{
+			get
+			{
+				return _hudTransform;
+			}
+			set
+			{
+				_hudTransform = value;
+			}
+		}
+
+		public void Construct(IBuildingService buildingService) =>
+			_buildingService = buildingService;
 
 		private void Start()
 		{
@@ -29,20 +45,12 @@ namespace CodeBase.UI.Elements
 
 		public void AppearAttackButton()
 		{
-			_attackButton.DOMove(_attackButtonInGamePosition.position, _appearDuration).OnComplete(() =>
-			{
-				BuildingHandler.Current.IsActive = false;
-			});
+			_buildingService.IsActive = false;
+			_attackButton.DOMoveX(_attackButtonInGamePosition.position.x, _appearDuration);
 		}
 
 		public void DisappearAttackButton()
 		{
-			ButtonInputUI[] buttons = _towerPanel.GetComponentsInChildren<ButtonInputUI>();
-			foreach (ButtonInputUI button in buttons)
-			{
-				button.enabled = false;
-			}
-
 			_attackButton.DOMove(_attackButtonStartPosition.position, _appearDuration);
 		}
 
@@ -51,15 +59,9 @@ namespace CodeBase.UI.Elements
 
 		public void AppearTowerPanel()
 		{
-			ButtonInputUI[] buttons = _towerPanel.GetComponentsInChildren<ButtonInputUI>();
-			foreach (ButtonInputUI button in buttons)
-			{
-				button.enabled = true;
-			}
-
 			_towerPanel.DOMove(_towerPanelInGamePosition.position, _appearDuration).OnComplete(() =>
 			{
-				BuildingHandler.Current.IsActive = true;
+				_buildingService.IsActive = true;
 			});
 		}
 	}
